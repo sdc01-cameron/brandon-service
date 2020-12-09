@@ -9,12 +9,14 @@
   "scripts": {
     "start": "nodemon ./server/index.js",
     "build": "webpack --watch",
-    "seed": "node ./server/database/seed.js",
+    "seed": "node ./server/database/seed.js --max_old_space_size=8192",
     "test": "jest"
   },
   "dependencies": {
     "axios": "^0.21.0",
     "body-parser": "^1.19.0",
+    "cassandra-driver": "^4.6.1",
+    "dotenv": "^8.2.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "enzyme-to-json": "^3.6.1",
@@ -27,7 +29,8 @@
     "react-dom": "^16.8.0",
     "react-router-dom": "^5.2.0",
     "react-test-renderer": "^16.8.0",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

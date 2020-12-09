@@ -4,9 +4,9 @@ const fs = require('fs');
 
 const writeStream = fs.createWriteStream(path.resolve(__dirname, 'data.csv'))
 writeStream.write('product name, images\n', 'utf-8');
-
+// 1000000
 let imageNum = 0;
-for (let i = 0; i < 1000000; i++) {
+for (let i = 0; i < 250000; i++) {
 
   const num = Math.floor(Math.random() * 5) + 1;
   let images = '';

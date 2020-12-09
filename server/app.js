@@ -26,7 +26,6 @@ app.post('/api/product', (req, res) => {
 
 });
 
-
 app.put('/api/product/:id', (req, res) => {
 
   const { id } = req.params;
