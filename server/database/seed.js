@@ -60,7 +60,15 @@ switch (DATABASE) {
 
           const query = `INSERT INTO SDC.products (id, productName, images) VALUES (?, ?, ?)`;
 
-          client.execute(query, [uuidv4(), faker.commerce.productName(), images]);
+          client.execute(query, [uuidv4(), faker.commerce.productName(), images])
+            .then(data => {
+
+              res.status.json(data);
+
+            }).catch(err => {
+              console.error(err);
+              res.sendStatus(500);
+            });
 
         }
 

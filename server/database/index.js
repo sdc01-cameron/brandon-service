@@ -1,17 +1,42 @@
 const mongoose = require('mongoose');
+const cassandra = require('cassandra-driver');
 mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true });
+const { DATABASE } = require('../../constants.js');
 
-let productSchema = mongoose.Schema({
-  _id: Number,
-  productName: {type: String, required: true},
-  images: [String]
-});
+switch (DATABASE) {
+  case 'mongodb':
 
-let Product = mongoose.model('Product', productSchema);
+    let productSchema = mongoose.Schema({
+      _id: Number,
+      productName: {type: String, required: true},
+      images: [String]
+    });
 
-module.exports.Product = Product;
+    let Product = mongoose.model('Product', productSchema);
 
-// 1. Build CRUD Routes
-// 2. Test with Postman
-// 3. Build data gen script, write to csv file using write stream
-// 4. Install & set up cassandra/postgresql
+    module.exports.Product = Product;
+
+    break;
+
+  case 'cassandra':
+
+    const client = new cassandra.Client({
+        localDataCenter: 'datacenter1',
+        contactPoints: ['127.0.0.1']
+      });
+
+      client.connect((err, res) => {
+        console.log('Connected to Cassandra');
+    });
+
+    module.exports.db = client;
+
+    break;
+  default:
+    break;
+}
+
+
+
+
+

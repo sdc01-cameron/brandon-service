@@ -1,74 +1,97 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid');
 const app = express();
-const database = require('./database/index.js')
+const { db } = require('./database/index.js');
 
 app.use(express.static(__dirname + '/../client/dist'));
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
-app.post('/api/product', (req, res) => {
+app.post('/api/products', (req, res) => {
 
   const product = req.body;
-  console.log(product);
+  const { productName, image } = req.body;
+  const id = uuidv4();
 
-  database.Product.create(product, (err, product) => {
+  const query = `INSERT INTO SDC.products (id, productname, image) VALUES (?, ?, ?);`;
+  db.execute(query, [id, productName, image])
+    .then(data => {
 
-    if (err) {
+      res.status(201).json({ id });
+
+    }).catch(err => {
       console.error(err);
       res.sendStatus(500);
-    } else {
-      res.status(201).json(product);
-    }
-
-  });
+    });
 
 });
 
-app.put('/api/product/:id', (req, res) => {
+app.put('/api/products/:id', (req, res) => {
 
   const { id } = req.params;
-  const product = req.body;
+  const { productName, image } = req.body;
 
-  database.Product.update({ _id: id }, product, (err) => {
+  const query = `UPDATE SDC.products SET productName = ?, image = ? WHERE id = ?;`;
 
-    if (err) {
+  db.execute(query, [productName, image, id])
+    .then(data => {
+      res.status(200).json({ id });
+    }).catch(err => {
       console.error(err);
       res.sendStatus(500);
-    } else {
-      res.status(200).json(product);
-    }
-
-  });
+    });
 
 });
 
-app.delete('/api/product/:id', (req, res) => {
+app.delete('/api/products/:id', (req, res) => {
 
   const { id } = req.params;
 
-  database.Product.deleteOne({ _id: id }, err => {
+  const query = `DELETE FROM SDC.products WHERE id = ?;`;
 
-    if (err) {
+  db.execute(query, [id])
+    .then(data => {
+      res.status(200).json({ id });
+    }).catch(err => {
       console.error(err);
       res.sendStatus(500);
-    } else {
-      res.sendStatus(200)
-    }
-  })
+    });
 
 });
 
-app.get('/api/product/:id', (req, res) => {
-  var item = req.params.id
-  database.Product.find({_id: item}, (err, products) => {
-    if (err) {
-      console.log('Could not retrieve products')
-    } else {
-      res.send(products);
-    }
-  })
+app.get('/api/products/:id', (req, res) => {
+
+  const { id } = req.params;
+  const query = `SELECT * FROM SDC.products WHERE id = ?;`
+
+  db.execute(query, [id])
+    .then(({ rows }) => {
+
+      res.status(200).json(rows);
+
+    }).catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+
 });
 
-module.exports = app;
+app.get('/api/products', (req, res) => {
+
+  const query = `SELECT * FROM SDC.products;`;
+
+  db.execute(query)
+    .then(({ rows }) => {
+
+      res.status(200).json(rows);
+
+    }).catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+
+});
+
+module.exports.app = app;
