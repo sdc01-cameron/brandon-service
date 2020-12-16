@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const cassandra = require('cassandra-driver');
-mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true });
 const { DATABASE } = require('../../constants.js');
 
 switch (DATABASE) {
   case 'mongodb':
 
+    mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true });
+    
     let productSchema = mongoose.Schema({
       _id: Number,
       productName: {type: String, required: true},

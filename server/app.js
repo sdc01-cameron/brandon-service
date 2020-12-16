@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 const app = express();
 const { db } = require('./database/index.js');
+require('newrelic');
 
 app.use(express.static(__dirname + '/../client/dist'));
 app.use(bodyParser.urlencoded());
@@ -11,7 +12,6 @@ app.use(bodyParser.json());
 
 app.post('/api/products', (req, res) => {
 
-  const product = req.body;
   const { productName, image } = req.body;
   const id = uuidv4();
 
