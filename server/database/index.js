@@ -33,6 +33,9 @@ switch (DATABASE) {
     module.exports.db = client;
 
     break;
+
+  case 'postgres':
+    break;
   default:
     break;
 }
